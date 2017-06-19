@@ -26,13 +26,23 @@ namespace ShoppingCart.ShoppingCart
             foreach (var item in shoppingCartItems)
             {
                 if (this.items.Add(item))
+                {
+                    // Raises an event through the eventStore for each item added
                     eventStore.Raise("ShoppingCartItemAdded", new { UserId, item });
+                }
             }
         }
 
-        public void RemoveItems(int[] productCatalogueIds, IEventStore eventStore)
+        public void RemoveItems(int[] productCatalogIds, IEventStore eventStore)
         {
-            items.RemoveWhere(i => productCatalogueIds.Contains(i.ProductCatalogueId));
+            foreach (var item in items.Where(i => productCatalogIds.Contains(i.ProductCatalogueId)).ToList())
+            {
+                if (items.Remove(item))
+                {
+                    // Raises an event through the eventStore for each item removed
+                    eventStore.Raise("ShoppingCartItemRemoved", new { UserId, item });
+                }
+            }
         }
     }
 }
