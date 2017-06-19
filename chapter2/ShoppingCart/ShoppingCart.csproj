@@ -15,4 +15,8 @@
     <PackageReference Include="Polly" Version="5.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Dockerfile" CopyToPublishDirectory="Always" />
+  </ItemGroup>
+
 </Project>
