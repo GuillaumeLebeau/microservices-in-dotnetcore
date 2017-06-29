@@ -29,7 +29,16 @@ namespace LoyaltyProgram
                 registeredUsers[userId] = updatedUser;
 
                 return updatedUser; // Nancy turns the user object into a complete response.
-            }); 
+            });
+
+            Get("/{userId:int}", parameters =>
+            {
+                int userId = parameters.userId;
+                if (registeredUsers.ContainsKey(userId))
+                    return registeredUsers[userId];
+                else
+                    return HttpStatusCode.NotFound;
+            });
         }
 
         private dynamic CreatedResponse(LoyaltyProgramUser newUser)
