@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  loyaltyprogram:
+    image: loyaltyprogram
+    build:
+      context: ./LoyaltyProgram
+      dockerfile: Dockerfile
