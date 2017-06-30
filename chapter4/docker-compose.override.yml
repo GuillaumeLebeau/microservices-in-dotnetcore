@@ -7,3 +7,14 @@ services:
       - ASPNETCORE_URLS=http://0.0.0.0:80
     ports:
       - "5000:80"
+
+  specialoffers:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - "5001:80"
+
+  loyaltyprogram-eventconsumer:
+    environment:
+      - SpecialOffersUrl=http://specialoffers

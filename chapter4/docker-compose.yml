@@ -6,3 +6,17 @@ services:
     build:
       context: ./LoyaltyProgram
       dockerfile: Dockerfile
+
+  specialoffers:
+    image: specialoffers
+    build:
+      context: ./SpecialOffers
+      dockerfile: Dockerfile
+
+  loyaltyprogram-eventconsumer:
+    image: loyaltyprogram-eventconsumer
+    build:
+      context: ./LoyaltyProgramEventConsumer
+      dockerfile: Dockerfile
+    depends_on:
+      - specialoffers
