@@ -2,7 +2,7 @@
 <Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
   <PropertyGroup Label="Globals">
     <ProjectGuid>266da4fd-d951-448a-af8f-da45bf557e91</ProjectGuid>
-    <DockerLaunchBrowser>True</DockerLaunchBrowser>
+    <DockerLaunchBrowser>false</DockerLaunchBrowser>
     <DockerServiceUrl>http://localhost:{ServicePort}</DockerServiceUrl>
     <DockerServiceName>loyaltyprogram</DockerServiceName>
   </PropertyGroup>
