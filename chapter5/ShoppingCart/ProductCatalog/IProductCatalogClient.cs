@@ -6,6 +6,6 @@ namespace ShoppingCart.ProductCatalog
 {
     public interface IProductCatalogClient
     {
-         Task<IEnumerable<ShoppingCartItem>> GetShoppingCartItems(int[] productCatalogueIds);
+         Task<IEnumerable<ShoppingCartItem>> GetShoppingCartItems(int[] productCatalogIds);
     }
 }

@@ -18,28 +18,27 @@ namespace ShoppingCart.ShoppingCart
                 return shoppingCartStore.Get(userId);
             });
 
-            Post("/{userid:int}/items", async (parameters, _) =>
+            Post("/{userid:int}/items", async parameters =>
             {
                 var productcatalogIds = this.Bind<int[]>();
                 var userId = (int)parameters.userid;
 
-                var shoppingCart = shoppingCartStore.Get(userId);
+                var shoppingCart = await shoppingCartStore.Get(userId).ConfigureAwait(false);
                 var shoppingCartItems = await productCatalog.GetShoppingCartItems(productcatalogIds).ConfigureAwait(false);
                 shoppingCart.AddItems(shoppingCartItems, eventStore);
-
-                shoppingCartStore.Save(shoppingCart);
+                await shoppingCartStore.Save(shoppingCart).ConfigureAwait(false);
 
                 return shoppingCart;
             });
 
-            Delete("/{userid:int}/items", parameters =>
+            Delete("/{userid:int}/items", async parameters =>
             {
                 var productcatalogIds = this.Bind<int[]>();
                 var userId = (int)parameters.userid;
 
-                var shoppingCart = shoppingCartStore.Get(userId);
+                var shoppingCart = await shoppingCartStore.Get(userId).ConfigureAwait(false);
                 shoppingCart.RemoveItems(productcatalogIds, eventStore);
-                shoppingCartStore.Save(shoppingCart);
+                await shoppingCartStore.Save(shoppingCart).ConfigureAwait(false);
 
                 return shoppingCart;
             });

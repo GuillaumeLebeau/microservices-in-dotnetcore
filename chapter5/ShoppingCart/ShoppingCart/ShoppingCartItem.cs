@@ -2,18 +2,22 @@ namespace ShoppingCart.ShoppingCart
 {
     public class ShoppingCartItem
     {
-        public ShoppingCartItem(int productCatalogueId, string productName, string description, Money price)
+        public ShoppingCartItem()
         {
-            this.ProductCatalogueId = productCatalogueId;
+        }
+
+        public ShoppingCartItem(int productCatalogId, string productName, string description, Money price)
+        {
+            this.ProductCatalogId = productCatalogId;
             this.ProductName = productName;
-            this.Desscription = description;
+            this.Description = description;
             this.Price = price;
         }
 
-        public int ProductCatalogueId { get; }
-        public string ProductName { get; }
-        public string Desscription { get; }
-        public Money Price { get; }
+        public int ProductCatalogId { get; set; }
+        public string ProductName { get; set; }
+        public string Description { get; set; }
+        public Money Price { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -23,13 +27,13 @@ namespace ShoppingCart.ShoppingCart
             }
 
             var that = obj as ShoppingCartItem;
-            return this.ProductCatalogueId.Equals(that.ProductCatalogueId);
+            return this.ProductCatalogId.Equals(that.ProductCatalogId);
         }
 
         // override object.GetHashCode
         public override int GetHashCode()
         {
-            return this.ProductCatalogueId.GetHashCode();
+            return this.ProductCatalogId.GetHashCode();
         }
     }
 }
