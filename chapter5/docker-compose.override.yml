@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  shoppingcart:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - ConnectionString=Server=sql.data;Database=ShoppingCart;User Id=sa;Password=Pass@word
+    ports:
+      - "5000:80"
+
+  sql.data:
+    environment:
+      - SA_PASSWORD=Pass@word
+      - ACCEPT_EULA=Y
+    ports:
+      - "5433:1433"
