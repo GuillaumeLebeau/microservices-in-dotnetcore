@@ -12,16 +12,16 @@ namespace ShoppingCart.ShoppingCart
             IEventStore eventStore)
             : base("/shoppingcart")
         {
-            Get("/{userid:int}", parameters =>
+            Get("/{userid:long}", parameters =>
             {
-                var userId = (int)parameters.userid;
+                var userId = (long)parameters.userid;
                 return shoppingCartStore.Get(userId);
             });
 
-            Post("/{userid:int}/items", async parameters =>
+            Post("/{userid:long}/items", async parameters =>
             {
                 var productcatalogIds = this.Bind<int[]>();
-                var userId = (int)parameters.userid;
+                var userId = (long)parameters.userid;
 
                 var shoppingCart = await shoppingCartStore.Get(userId).ConfigureAwait(false);
                 var shoppingCartItems = await productCatalog.GetShoppingCartItems(productcatalogIds).ConfigureAwait(false);
@@ -31,10 +31,10 @@ namespace ShoppingCart.ShoppingCart
                 return shoppingCart;
             });
 
-            Delete("/{userid:int}/items", async parameters =>
+            Delete("/{userid:long}/items", async parameters =>
             {
                 var productcatalogIds = this.Bind<int[]>();
-                var userId = (int)parameters.userid;
+                var userId = (long)parameters.userid;
 
                 var shoppingCart = await shoppingCartStore.Get(userId).ConfigureAwait(false);
                 shoppingCart.RemoveItems(productcatalogIds, eventStore);

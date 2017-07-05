@@ -18,7 +18,7 @@ CREATE TABLE [shopcart].[ShoppingCartItems](
   [ProductCatalogId] [bigint] NOT NULL,
   [ProductName] [nvarchar](100) NOT NULL,
   [ProductDescription] [nvarchar](500) NULL,
-  [Amount] [int] NOT NULL,
+  [Amount] [decimal] NOT NULL,
   [Currency] [nvarchar](5) NOT NULL
 )
 GO

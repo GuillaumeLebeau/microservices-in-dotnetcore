@@ -7,25 +7,28 @@ namespace ShoppingCart.ShoppingCart
 {
     public class ShoppingCart
     {
-        private HashSet<ShoppingCartItem> items = new HashSet<ShoppingCartItem>();
+        private readonly HashSet<ShoppingCartItem> items = new HashSet<ShoppingCartItem>();
 
-        public ShoppingCart(int userId)
+        public ShoppingCart(int id, long userId)
         {
-            this.UserId = userId;
+            Id = id;
+            UserId = userId;
         }
 
-        public ShoppingCart(int userId, IEnumerable<ShoppingCartItem> items)
+        public ShoppingCart(int id, long userId, IEnumerable<ShoppingCartItem> items)
         {
-            this.UserId = userId;
+            Id = id;
+            UserId = userId;
+
             foreach (var item in items)
             {
                 this.items.Add(item);
             }
         }
 
-        public int Id { get; }
+        public int Id { get; set; }
 
-        public int UserId { get; }
+        public long UserId { get; }
 
         public IEnumerable<ShoppingCartItem> Items
         {
@@ -36,7 +39,7 @@ namespace ShoppingCart.ShoppingCart
         {
             foreach (var item in shoppingCartItems)
             {
-                if (this.items.Add(item))
+                if (items.Add(item))
                 {
                     // Raises an event through the eventStore for each item added
                     eventStore.Raise("ShoppingCartItemAdded", new { UserId, item });
