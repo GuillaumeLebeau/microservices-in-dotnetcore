@@ -1,7 +1,4 @@
-﻿CREATE SCHEMA [shopcart]
-GO
-
-CREATE TABLE [shopcart].[ShoppingCart](
+﻿CREATE TABLE [shopcart].[ShoppingCart](
   [ID] int IDENTITY(1,1) PRIMARY KEY,
   [UserId] [bigint] NOT NULL,
   CONSTRAINT ShoppingCartUnique UNIQUE([ID], [UserID])

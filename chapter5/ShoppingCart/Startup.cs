@@ -1,8 +1,9 @@
 using System;
 using System.Data.SqlClient;
 using System.Reflection;
-using System.Threading.Tasks;
+
 using DbUp;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using Nancy.Owin;
 
 using Polly;
+using System.Threading.Tasks;
+using Dapper;
 
 namespace ShoppingCart
 {
@@ -31,12 +34,6 @@ namespace ShoppingCart
 
         public IConfigurationRoot Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
-        {
-        }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
@@ -47,21 +44,31 @@ namespace ShoppingCart
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseOwin(x => x.UseNancy(options => options.Bootstrapper = new Bootstrapper(Configuration)));
+            var connectionString = Configuration["ConnectionString"];
+            app.UseOwin(x => x.UseNancy(options => options.Bootstrapper = new Bootstrapper(connectionString)));
 
-            WaitForSqlAvailabilityAsync(loggerFactory, app, 2);
+            WaitForSqlAvailabilityAsync(connectionString, loggerFactory, 2).Wait();
         }
 
-        private void WaitForSqlAvailabilityAsync(ILoggerFactory loggerFactory, IApplicationBuilder app, int retries = 0)
+        private async Task WaitForSqlAvailabilityAsync(string connectionString, ILoggerFactory loggerFactory, int retries = 0)
         {
             var logger = loggerFactory.CreateLogger(nameof(Startup));
             var policy = CreatePolicy(retries, logger, nameof(WaitForSqlAvailabilityAsync));
-            policy.Execute(() =>
+            await policy.ExecuteAsync(async () =>
             {
-                EnsureDatabase.For.SqlDatabase(Configuration["ConnectionString"]);
+                EnsureDatabase.For.SqlDatabase(connectionString);
+
+                using (var conn = new SqlConnection(connectionString))
+                {
+                    await conn.OpenAsync().ConfigureAwait(false);
+                    await conn.ExecuteAsync(@"IF NOT EXISTS (SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'shopcart')
+BEGIN
+    EXEC sp_executesql N'CREATE SCHEMA shopcart'
+END").ConfigureAwait(false);
+                }
 
                 var upgrader = DeployChanges.To
-                    .SqlDatabase(Configuration["ConnectionString"])
+                    .SqlDatabase(connectionString, "shopcart")
                     .WithScriptsEmbeddedInAssembly(Assembly.GetEntryAssembly())
                     .LogToConsole()
                     .Build();
@@ -72,19 +79,17 @@ namespace ShoppingCart
                 {
                     throw result.Error;
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         private Policy CreatePolicy(int retries, ILogger logger, string prefix)
         {
             return Policy.Handle<SqlException>().
-                WaitAndRetry(
+                WaitAndRetryAsync(
                     retryCount: retries,
                     sleepDurationProvider: retry => TimeSpan.FromSeconds(5),
                     onRetry: (exception, timeSpan, retry, ctx) =>
-                    {
-                        logger.LogTrace($"[{prefix}] Exception {exception.GetType().Name} with message ${exception.Message} detected on attempt {retry} of {retries}");
-                    }
+                        logger.LogTrace($"[{prefix}] Exception {exception.GetType().Name} with message ${exception.Message} detected on attempt {retry} of {retries}")
                 );
         }
     }

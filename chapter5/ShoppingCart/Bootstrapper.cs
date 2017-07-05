@@ -1,26 +1,26 @@
-using Microsoft.Extensions.Configuration;
-
 using Nancy;
 using Nancy.TinyIoc;
 
+using ShoppingCart.EventFeed;
 using ShoppingCart.ShoppingCart;
 
 namespace ShoppingCart
 {
     public class Bootstrapper : DefaultNancyBootstrapper
     {
-        private readonly IConfigurationRoot _configuration;
+        private readonly string _connectionString;
 
-        public Bootstrapper(IConfigurationRoot configuration)
+        public Bootstrapper(string connectionString)
         {
-            _configuration = configuration;
+            _connectionString = connectionString;
         }
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
         {
             base.ConfigureApplicationContainer(container);
 
-            container.Register<IShoppingCartStore, ShoppingCartStore>(new ShoppingCartStore(_configuration["ConnectionString"]));
+            container.Register<IShoppingCartStore, ShoppingCartStore>(new ShoppingCartStore(_connectionString));
+            container.Register<IEventStore, EventStore>(new EventStore(_connectionString));
         }
     }
 }
