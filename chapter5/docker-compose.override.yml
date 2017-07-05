@@ -6,6 +6,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=Server=sql.data;Database=ShoppingCart;User Id=sa;Password=Pass@word
+      - EventStoreConnectionString=ConnectTo=tcp://admin:changeit@eventstore:1113/
+      - EventStoreType=EventStore
     ports:
       - "5000:80"
 
@@ -15,3 +17,8 @@ services:
       - ACCEPT_EULA=Y
     ports:
       - "5433:1433"
+
+  eventstore:
+    ports:
+      - "2113:2113"
+      - "1113:1113"

@@ -1,8 +1,3 @@
-using Dapper;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,9 +6,14 @@ using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Dapper;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace ShoppingCart.EventFeed
 {
-    public class EventStore : IEventStore
+    public class SqlEventStore : IEventStore
     {
         private readonly string _connectionString;
 
@@ -28,12 +28,12 @@ INSERT INTO shopcart.EventStore(Name, OccurredAt, Content)
 VALUES (@Name, @OccurredAt, @Content)
 ";
 
-        public EventStore(string connectionString)
+        public SqlEventStore(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public async Task<IEnumerable<Event>> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
+        public async Task<IEnumerable<Event>> GetEvents(long? firstEventSequenceNumber = null, long? lastEventSequenceNumber = null)
         {
             using (var conn = await GetOpenConnectionAsync().ConfigureAwait(false))
             {
@@ -42,8 +42,8 @@ VALUES (@Name, @OccurredAt, @Content)
                     readEventsSql,
                     new
                     {
-                        Start = firstEventSequenceNumber,
-                        End = lastEventSequenceNumber
+                        Start = firstEventSequenceNumber.GetValueOrDefault(0),
+                        End = lastEventSequenceNumber.GetValueOrDefault(long.MaxValue)
                     }).ConfigureAwait(false))
                     .Select(row =>
                     {

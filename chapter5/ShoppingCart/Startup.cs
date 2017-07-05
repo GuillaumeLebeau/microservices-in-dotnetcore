@@ -1,20 +1,15 @@
 using System;
 using System.Data.SqlClient;
 using System.Reflection;
-
+using System.Threading.Tasks;
+using Dapper;
 using DbUp;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
 using Nancy.Owin;
-
 using Polly;
-using System.Threading.Tasks;
-using Dapper;
 
 namespace ShoppingCart
 {
@@ -45,7 +40,7 @@ namespace ShoppingCart
             }
 
             var connectionString = Configuration["ConnectionString"];
-            app.UseOwin(x => x.UseNancy(options => options.Bootstrapper = new Bootstrapper(connectionString)));
+            app.UseOwin(x => x.UseNancy(options => options.Bootstrapper = new Bootstrapper(connectionString, Configuration["EventStoreConnectionString"], Configuration["EventStoreType"])));
 
             WaitForSqlAvailabilityAsync(connectionString, loggerFactory, 2).Wait();
         }

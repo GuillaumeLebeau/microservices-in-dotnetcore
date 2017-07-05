@@ -11,3 +11,6 @@ services:
 
   sql.data:
     image: microsoft/mssql-server-linux
+
+  eventstore:
+    image: eventstore/eventstore
