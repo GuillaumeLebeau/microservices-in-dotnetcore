@@ -22,3 +22,10 @@ services:
     ports:
       - "2113:2113"
       - "1113:1113"
+
+  productcatalog:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - "5001:80"

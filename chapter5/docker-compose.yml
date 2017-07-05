@@ -14,3 +14,9 @@ services:
 
   eventstore:
     image: eventstore/eventstore
+
+  productcatalog:
+    image: productcatalog
+    build:
+      context: ./ProductCatalog
+      dockerfile: Dockerfile
