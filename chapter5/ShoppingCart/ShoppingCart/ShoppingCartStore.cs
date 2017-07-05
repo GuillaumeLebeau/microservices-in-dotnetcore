@@ -11,6 +11,7 @@ namespace ShoppingCart.ShoppingCart
     {
         private readonly string _connectionString;
 
+        // Dapper works with SQL, so you have SQL in the C# code.
         private const string readItemsSql = @"
 SELECT cart.ID AS Id,
        cart.UserId
@@ -56,8 +57,10 @@ VALUES (@ShoppingCartId, @ProductCatalogId, @ProductName, @ProductDescription, @
 
         public async Task<ShoppingCart> Get(long userId)
         {
+            // Opens a connection to the ShoppingCart database
             using (var conn = await GetOpenConnectionAsync().ConfigureAwait(false))
             {
+                // Uses a Dapper extension method to execute a SQL query and map the results back to a ShoppingCart object
                 using (var multi = await conn.QueryMultipleAsync(readItemsSql, new { UserId = userId }).ConfigureAwait(false))
                 {
                     var shoppingCart = await multi.ReadSingleOrDefaultAsync<ShoppingCart>().ConfigureAwait(false);
@@ -78,10 +81,16 @@ VALUES (@ShoppingCartId, @ProductCatalogId, @ProductName, @ProductDescription, @
             using (var conn = await GetOpenConnectionAsync().ConfigureAwait(false))
             using (var tx = conn.BeginTransaction())
             {
+                // Deletes all preexisting shopping cart items
                 await conn.ExecuteAsync(deleteAllForShoppingCartSql, new { UserId = shoppingCart.UserId }, tx).ConfigureAwait(false);
+
+                // Deletes all preexisting shopping cart
                 await conn.ExecuteAsync(deleteShoppingCartForUserSql, new { UserId = shoppingCart.UserId }, tx).ConfigureAwait(false);
 
+                // Adds the current shopping cart
                 shoppingCart.Id = await conn.ExecuteScalarAsync<int>(addShoppingCartForUserSql, new { UserId = shoppingCart.UserId }, tx).ConfigureAwait(false);
+
+                // Adds the current shopping cart items
                 await conn.ExecuteAsync(addAllForShoppingCartSql, shoppingCart.Items.Select(i => new {
                     ShoppingCartId = shoppingCart.Id,
                     i.ProductCatalogId,
