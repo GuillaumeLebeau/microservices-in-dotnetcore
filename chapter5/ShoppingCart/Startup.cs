@@ -40,7 +40,7 @@ namespace ShoppingCart
             }
 
             var connectionString = Configuration["ConnectionString"];
-            app.UseOwin(x => x.UseNancy(options => options.Bootstrapper = new Bootstrapper(connectionString, Configuration["EventStoreConnectionString"], Configuration["EventStoreType"])));
+            app.UseOwin(x => x.UseNancy(options => options.Bootstrapper = new Bootstrapper(Configuration)));
 
             WaitForSqlAvailabilityAsync(connectionString, loggerFactory, 2).Wait();
         }

@@ -8,6 +8,8 @@ services:
       - ConnectionString=Server=sql.data;Database=ShoppingCart;User Id=sa;Password=Pass@word
       - EventStoreConnectionString=ConnectTo=tcp://admin:changeit@eventstore:1113/
       - EventStoreType=EventStore
+      - ProductCatalogUrl=http://productcatalog
+#      - ProductCatalogUrl=http://private-05cc8-chapter2productcataloguemicroservice.apiary-mock.com
     ports:
       - "5000:80"
 

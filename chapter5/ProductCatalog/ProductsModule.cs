@@ -18,7 +18,7 @@ namespace ProductCatalog
 
                 return Negotiate
                     .WithModel(products)
-                    .WithHeader("cache-control", "max-age:86400");
+                    .WithHeader("cache-control", "max-age=86400");
             });
         }
 
@@ -37,7 +37,7 @@ namespace ProductCatalog
     {
         public IEnumerable<ProductCatalogProduct> GetProductsByIds(IEnumerable<int> productIds)
         {
-            return productIds.Select(id => new ProductCatalogProduct(id, "foo" + id.ToString(), "bar", new Money()));
+            return productIds.Select(id => new ProductCatalogProduct(id, "foo" + id.ToString(), "bar", new Money("EUR", 40.3M * id)));
         }
     }
 
@@ -59,5 +59,14 @@ namespace ProductCatalog
 
     public class Money
     {
+        public Money(string currency, decimal amount)
+        {
+            this.Currency = currency;
+            this.Amount = amount;
+        }
+
+        public string Currency { get; }
+
+        public decimal Amount { get; }
     }
 }

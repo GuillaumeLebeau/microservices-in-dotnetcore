@@ -2,6 +2,7 @@
   "ConnectionString": "Server=tcp:127.0.0.1,5433;Initial Catalog=ShoppingCart;User Id=sa;Password=Pass@word",
   "EventStoreConnectionString": "Server=tcp:127.0.0.1,5433;Initial Catalog=ShoppingCart;User Id=sa;Password=Pass@word",
   "EventStoreType": "Sql",
+  "ProductCatalogUrl": "http://localhost:5001",
   "Logging": {
     "IncludeScopes": false,
     "LogLevel": {
