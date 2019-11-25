@@ -17,7 +17,7 @@
     <PackageReference Include="dbup4-sqlserver" Version="4.0.0-beta0003" />
     <PackageReference Include="EventStore.ClientAPI.NetCore" Version="4.0.0-alpha-1" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Owin" Version="1.1.2" />
     <PackageReference Include="Nancy" Version="2.0.0-clinteastwood" />
     <PackageReference Include="Polly" Version="5.2.0" />
