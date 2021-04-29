@@ -1,0 +1,20 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/chapter5"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: Microsoft.AspNetCore.Owin
+    versions:
+    - 5.0.2
+    - 5.0.3
+    - 5.0.4
+  - dependency-name: Microsoft.ApplicationInsights.AspNetCore
+    versions:
+    - 2.16.0
+  - dependency-name: Polly
+    versions:
+    - 7.2.1
